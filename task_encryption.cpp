@@ -19,8 +19,11 @@ void encryption(std::vector<char> bytes, int key, const std::string& file_name) 
                 | (xored << (16 - rightshift));
         char r1=encrypted_block>>8;
         char r2=encrypted_block;
-        outputFile.write(&r1, sizeof(r1));
-        outputFile.write(&r2, sizeof(r2));
+        if (outputFile.is_open()) {
+            outputFile << r1 << r2 << std::endl;
+        }
+       /* outputFile.write(&r1, sizeof(r1));
+        outputFile.write(&r2, sizeof(r2)); */
     }
     outputFile.close();
 }
