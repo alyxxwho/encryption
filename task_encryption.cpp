@@ -52,6 +52,9 @@ std::string decryption(int key, const std::string& file_name) {
         decryptedData[i] = r1;
         decryptedData[i + 1] = r2;
     }
+    for (int i = 0; i < decryptedData.size(); i++) {
+        std::cout << decryptedData[i];
+    }
 }
 
 int main(int argc, const char *argv[]) {
