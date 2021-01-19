@@ -20,10 +20,8 @@ void encryption(std::vector<char> bytes, int key, const std::string& file_name) 
         char r1=encrypted_block>>8;
         char r2=encrypted_block;
         if (outputFile.is_open()) {
-            outputFile << r1 << r2 << std::endl;
+            outputFile << r1 << r2;
         }
-       /* outputFile.write(&r1, sizeof(r1));
-        outputFile.write(&r2, sizeof(r2)); */
     }
     outputFile.close();
 }
@@ -32,9 +30,11 @@ std::string decryption(int key, const std::string& file_name) {
     srand(key);
     unsigned int rightshift = 2;
     std::ifstream readFile(file_name, std::ios::binary);
-    std::vector<char> encryptedData((std::istream_iterator<char>(readFile)),
-                                    std::istream_iterator<char>());
-    readFile.close();
+    std::string encryptedData1; std::vector<char> encryptedData;
+    while (getline(readFile, encryptedData1)) {
+        for (unsigned int i = 0; i < encryptedData1.length(); i++)
+            encryptedData.push_back(encryptedData1[i]);
+    }
 
     std::vector<char> decryptedData(encryptedData.size());
     for (int i = 0; i < encryptedData.size(); i += 2) {
@@ -45,16 +45,17 @@ std::string decryption(int key, const std::string& file_name) {
                 ((static_cast<unsigned int>(b1) << 8u) | (static_cast<unsigned int>(b2)));
         unsigned int shifted_encrypted_block =
                 (encrypted_block << rightshift) | (encrypted_block >> (16 - rightshift));
-        unsigned int result =
-                shifted_encrypted_block ^gamma;
+        unsigned int result = shifted_encrypted_block ^gamma;
         unsigned char r1 = result >> 8;
         unsigned char r2 = result;
         decryptedData[i] = r1;
         decryptedData[i + 1] = r2;
     }
+
     for (int i = 0; i < decryptedData.size(); i++) {
         std::cout << decryptedData[i];
     }
+
 }
 
 int main(int argc, const char *argv[]) {
